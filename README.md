@@ -1,2 +1,2 @@
 # ShapeDetector
-Detecte circle and triangle
+Detect circle and triangle
