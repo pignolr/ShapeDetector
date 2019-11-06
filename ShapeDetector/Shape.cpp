@@ -8,6 +8,7 @@ namespace shapedetector
 		: _path(path),
 		_image(cv::imread(path, cv::IMREAD_COLOR)),
 		_edge(_image.clone()),
+		_edgePoint(),
 		_gradient(_edge.rows, std::vector<double>(_edge.cols, 0)),
 		_direction(_edge.rows, std::vector<double>(_edge.cols, 0))
 	{
@@ -127,6 +128,7 @@ namespace shapedetector
 					pixelPtr[y * _edge.cols * cn + x * cn + 1] = 255;
 					pixelPtr[y * _edge.cols * cn + x * cn + 2] = 255;
 					iter.insert(std::pair<int, int>(x, y));
+					_edgePoint.insert(std::pair<int, int>(x, y));
 				}
 				else {
 					pixelPtr[y * _edge.cols * cn + x * cn + 0] = 0;
@@ -157,6 +159,7 @@ namespace shapedetector
 				pixelPtr[y * _edge.cols * cn + x * cn + 0] = 255;
 				pixelPtr[y * _edge.cols * cn + x * cn + 1] = 255;
 				pixelPtr[y * _edge.cols * cn + x * cn + 2] = 255;
+				_edgePoint.insert(std::pair<int, int>(x, y));
 			}
 			iter = tmp;
 		}
@@ -165,8 +168,6 @@ namespace shapedetector
 	void Shape::edgeDetection() noexcept
 	{
 		edgeGrayscale();
-		//edgeBlur();
-		edgeGradient();
 		edgeRemoveNonMaxGradient();
 		edgeFilter(20, 25);
 	}
@@ -180,4 +181,10 @@ namespace shapedetector
 	{
 		return _edge;
 	}
+
+	const std::set<std::pair<int, int>>& Shape::getEdgePoint() const
+	{
+		return _edgePoint;
+	}
+
 }

@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
 #include <vector>
+#include <set>
 
 namespace shapedetector
 {
@@ -12,6 +13,7 @@ namespace shapedetector
 		const std::string _path;
 		cv::Mat _image;
 		cv::Mat _edge;
+		std::set<std::pair<int, int>> _edgePoint;
 		std::vector<std::vector<double>> _gradient;
 		std::vector<std::vector<double>> _direction;
 
