@@ -20,10 +20,11 @@ namespace shapedetector
 
 	void ShapeManager::ShowShapes()
 	{
+		cv::namedWindow("Shape Source", cv::WINDOW_AUTOSIZE);
 		cv::namedWindow("Shape Detector", cv::WINDOW_AUTOSIZE);
 		for (auto& shape : _shapes) {
-			cv::imshow("Shape Detector", shape->getImage());
-
+			cv::imshow("Shape Source", shape->getImage());
+			cv::imshow("Shape Detector", shape->getEdge());
 			cv::waitKey(0);
 		}
 	}
