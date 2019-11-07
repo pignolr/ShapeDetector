@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <set>
+# define M_PIl          3.141592653589793238462643383279502884L /* pi */
 
 namespace shapedetector
 {
@@ -25,9 +26,11 @@ namespace shapedetector
 		void edgeFilter(int low, int high) noexcept;
 	public:
 		explicit Shape(const std::string &path);
+		void drawCircle(int x, int y, int r);
 
 		const cv::Mat& getImage() const;
 		const cv::Mat& getEdge() const;
 		const std::set<std::pair<int, int>>& getEdgePoint() const;
+		const std::string& getPath() const;
 	};
 }

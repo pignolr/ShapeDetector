@@ -27,12 +27,18 @@
     <ClCompile Include="Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CircleDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShapeManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeDetector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
