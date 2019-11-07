@@ -168,6 +168,7 @@ namespace shapedetector
 	void Shape::edgeDetection() noexcept
 	{
 		edgeGrayscale();
+		edgeGradient();
 		edgeRemoveNonMaxGradient();
 		edgeFilter(20, 25);
 	}

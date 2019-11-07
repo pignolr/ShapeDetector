@@ -28,5 +28,6 @@ namespace shapedetector
 
 		const cv::Mat& getImage() const;
 		const cv::Mat& getEdge() const;
+		const std::set<std::pair<int, int>>& getEdgePoint() const;
 	};
 }
