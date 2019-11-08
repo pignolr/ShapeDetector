@@ -14,7 +14,7 @@ namespace shapedetector
 		bool detectEllipseInShape(const std::unique_ptr<Shape>& shape);
 
 	public:
-		explicit ShapeManager(int ac, char** av);
+		explicit ShapeManager(const std::list<std::string>& imagesPath);
 
 		void ShowShapes();
 	};

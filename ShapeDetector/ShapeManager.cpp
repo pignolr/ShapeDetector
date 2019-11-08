@@ -4,15 +4,14 @@
 
 namespace shapedetector
 {
-	ShapeManager::ShapeManager(int ac, char** av)
+	ShapeManager::ShapeManager(const std::list<std::string>& imagesPath)
 	{
-		std::list<cv::Mat> images;
-		for (int i = 1; i < ac; ++i) {
+		for (const auto &path: imagesPath) {
 			try {
-				_shapes.push_back(std::unique_ptr<Shape>(new Shape(av[i])));
+				_shapes.push_back(std::unique_ptr<Shape>(new Shape(path)));
 			}
 			catch (std::invalid_argument &e) {
-				std::cout << "Error: Could not open or find the image: " << av[i] << std::endl;
+				std::cout << "Error: Could not open or find the image: " << path << std::endl;
 			}
 		}
 		if (!_shapes.size())
@@ -46,7 +45,7 @@ namespace shapedetector
 		auto ellipsePos = detectEllipse(shape);
 		if (std::get<0>(ellipsePos) == -1 && std::get<1>(ellipsePos) == -1
 			&& std::get<2>(ellipsePos) == -1 && std::get<3>(ellipsePos) == -1) {
-			std::cout << "Not a ellipse" << std::endl;
+			std::cout << "Not an ellipse" << std::endl;
 			return false;
 		}
 		else {

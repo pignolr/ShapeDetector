@@ -245,17 +245,17 @@ int openImage()
 	}
 }
 
-int main(int ac, char **av)
+int main()
 {
-	if (ac < 2) {
-
-		std::cout << "Usage: av[0] img1 [...]" << std::endl;
-		return EXIT_FAILURE;
-	}
-
 	try
 	{
-		shapedetector::ShapeManager shapeManager(ac, av);
+		std::list<std::string> imagesPath = {
+			"c:/input/1.jpg",
+			"c:/input/2.jpg",
+			"c:/input/3.jpg",
+			"c:/input/4.jpg",
+		};
+		shapedetector::ShapeManager shapeManager(imagesPath);
 		shapeManager.ShowShapes();
 	}
 	catch (std::invalid_argument & e)
