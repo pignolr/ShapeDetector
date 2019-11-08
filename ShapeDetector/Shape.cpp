@@ -179,6 +179,11 @@ namespace shapedetector
 		cv::circle(_image, cv::Point(x, y), r, cv::Scalar(0, 0, 255, 255), 2);
 	}
 
+	void Shape::drawEllipse(int x, int y, int a, int b)
+	{
+		cv::ellipse(_image, cv::Point(x, y), cv::Size(a, b), 0., 0., 360., cv::Scalar(0, 255, 0, 255), 2);
+	}
+
 	const cv::Mat& Shape::getImage() const
 	{
 		return _image;

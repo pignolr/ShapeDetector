@@ -39,6 +39,29 @@ namespace shapedetector
 			return true;
 		}
 	}
+#include <chrono>
+	bool ShapeManager::detectEllipseInShape(const std::unique_ptr<Shape>& shape)
+	{
+		std::cout << "Ellipse Detection..." << std::endl;
+		auto ellipsePos = detectEllipse(shape);
+		if (std::get<0>(ellipsePos) == -1 && std::get<1>(ellipsePos) == -1
+			&& std::get<2>(ellipsePos) == -1 && std::get<3>(ellipsePos) == -1) {
+			std::cout << "Not a ellipse" << std::endl;
+			return false;
+		}
+		else {
+			std::cout << "It's a ellipse: "
+				<< "{ x:" << std::get<0>(ellipsePos)
+				<< ", y:" << std::get<1>(ellipsePos)
+				<< ", a:" << std::get<2>(ellipsePos)
+				<< ", b:" << std::get<3>(ellipsePos)
+				<< " }" << std::endl;
+			// draw result circcle
+			shape->drawEllipse(std::get<0>(ellipsePos), std::get<1>(ellipsePos), std::get<2>(ellipsePos), std::get<3>(ellipsePos));
+			cv::imshow("Shape Source", shape->getImage());
+			return true;
+		}
+	}
 
 	void ShapeManager::ShowShapes()
 	{
@@ -48,8 +71,12 @@ namespace shapedetector
 			std::cout << "Process \"" << shape->getPath() << "\"..." << std::endl;
 			cv::imshow("Shape Source", shape->getImage());
 			cv::imshow("Shape Detector", shape->getEdge());
+			cv::waitKey(10);
 
-			detectCircleInShape(shape);
+			bool shapeIsFound = false;
+			shapeIsFound = detectCircleInShape(shape);
+			if (!shapeIsFound)
+				shapeIsFound = detectEllipseInShape(shape);
 
 			std::cout << "Press Key for next Shape..." << std::endl << std::endl;
 			cv::waitKey(0);

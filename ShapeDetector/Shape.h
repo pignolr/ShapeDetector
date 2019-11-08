@@ -27,6 +27,7 @@ namespace shapedetector
 	public:
 		explicit Shape(const std::string &path);
 		void drawCircle(int x, int y, int r);
+		void drawEllipse(int x, int y, int a, int b);
 
 		const cv::Mat& getImage() const;
 		const cv::Mat& getEdge() const;

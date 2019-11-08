@@ -3,4 +3,5 @@
 
 namespace shapedetector {
 	std::tuple<int, int, int> detectCircle(const std::unique_ptr<Shape>& shape);
+	std::tuple<int, int, int, int> detectEllipse(const std::unique_ptr<Shape>& shape);
 }
