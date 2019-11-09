@@ -1,6 +1,7 @@
 #include <set>
+#include <algorithm>
+#include <opencv2/imgproc.hpp>
 #include "Shape.h"
-# define M_PIl          3.141592653589793238462643383279502884L /* pi */
 
 namespace shapedetector
 {
@@ -52,7 +53,7 @@ namespace shapedetector
 			{1. / 256., 4. / 256., 6. / 256., 4. / 256., 1. / 256.}
 		};
 	
-		int offset = kernel.size() / 2;
+		size_t offset = kernel.size() / 2;
 		auto copy = _edge.clone();
 		uint8_t* pixelCopyPtr = (uint8_t*)copy.data;
 		uint8_t* pixelPtr = (uint8_t*)_edge.data;
@@ -173,6 +174,23 @@ namespace shapedetector
 		edgeFilter(20, 25);
 	}
 
+	void Shape::drawTriangle(int ax, int ay, int bx, int by, int cx, int cy)
+	{
+		cv::line(_image, cv::Point(ax, ay), cv::Point(bx, by), cv::Scalar(255, 0, 255, 255), 2);
+		cv::line(_image, cv::Point(ax, ay), cv::Point(cx, cy), cv::Scalar(255, 0, 255, 255), 2);
+		cv::line(_image, cv::Point(bx, by), cv::Point(cx, cy), cv::Scalar(255, 0, 255, 255), 2);
+	}
+
+	void Shape::drawCircle(int x, int y, int r)
+	{
+		cv::circle(_image, cv::Point(x, y), r, cv::Scalar(0, 0, 255, 255), 2);
+	}
+
+	void Shape::drawEllipse(int x, int y, int a, int b)
+	{
+		cv::ellipse(_image, cv::Point(x, y), cv::Size(a, b), 0., 0., 360., cv::Scalar(0, 255, 0, 255), 2);
+	}
+
 	const cv::Mat& Shape::getImage() const
 	{
 		return _image;
@@ -188,4 +206,6 @@ namespace shapedetector
 		return _edgePoint;
 	}
 
+	const std::string& Shape::getPath() const
+	{ return _path; }
 }

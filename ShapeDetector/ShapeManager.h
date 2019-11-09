@@ -10,8 +10,12 @@ namespace shapedetector
 	{
 		std::list<std::unique_ptr<Shape>> _shapes;
 
+		bool detectCircleInShape(const std::unique_ptr<Shape> &shape);
+		bool detectEllipseInShape(const std::unique_ptr<Shape>& shape);
+		bool detectTriangleInShape(const std::unique_ptr<Shape>& shape);
+
 	public:
-		explicit ShapeManager(int ac, char** av);
+		explicit ShapeManager(const std::list<std::string>& imagesPath);
 
 		void ShowShapes();
 	};
