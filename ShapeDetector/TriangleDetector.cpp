@@ -184,25 +184,48 @@ namespace shapedetector {
 		return std::make_pair(-1, -1);
 	}
 
-	std::vector < std::pair<int, int>> findTwoPoints(std::vector<std::pair<int, int>> &topPxls, std::vector<std::pair<int, int>> &bottomPxls, std::vector<std::pair<int, int>> &leftPxls, std::vector<std::pair<int, int>> &rightPxls)
+	void findThreePoints(
+		std::vector < std::pair<int, int>>& trianglePoints,
+		std::vector<std::pair<int, int>>& topPxls,
+		std::vector<std::pair<int, int>>& bottomPxls,
+		std::vector<std::pair<int, int>>& leftPxls,
+		std::vector<std::pair<int, int>>& rightPxls)
 	{
-		std::vector<std::pair<int, int>> trianglePoints;
-		std::pair<int, int> point;
+		std::pair<int, int> pointTR;
+		std::pair<int, int> pointTL;
+		std::pair<int, int> pointBR;
+		std::pair<int, int> pointBL;
 
-		point = checkCommon(topPxls, rightPxls);
-		if (point.first != -1 && point.second != -1 && trianglePoints.size() < 2)
+		pointTR = checkCommon(topPxls, rightPxls);
+		if (pointTR.first != -1 && pointTR.second != -1 && trianglePoints.size() < 2)
 			trianglePoints.push_back(std::make_pair(rightPxls[0].first, topPxls[0].second));
-		point = checkCommon(rightPxls, bottomPxls);
-		if (point.first != -1 && point.second != -1 && trianglePoints.size() < 2)
+		pointBR = checkCommon(rightPxls, bottomPxls);
+		if (pointBR.first != -1 && pointBR.second != -1 && trianglePoints.size() < 2)
 			trianglePoints.push_back(std::make_pair(rightPxls[0].first, bottomPxls[0].second));
-		point = checkCommon(bottomPxls, leftPxls);
-		if (point.first != -1 && point.second != -1 && trianglePoints.size() < 2)
+		pointBL = checkCommon(bottomPxls, leftPxls);
+		if (pointBL.first != -1 && pointBL.second != -1 && trianglePoints.size() < 2)
 			trianglePoints.push_back(std::make_pair(leftPxls[0].first, bottomPxls[0].second));
-		point = checkCommon(leftPxls, topPxls);
-		if (point.first != -1 && point.second != -1 && trianglePoints.size() < 2)
+		pointTL = checkCommon(leftPxls, topPxls);
+		if (pointTL.first != -1 && pointTL.second != -1 && trianglePoints.size() < 2)
 			trianglePoints.push_back(std::make_pair(leftPxls[0].first, topPxls[0].second));
-
-		return trianglePoints;
+		if (trianglePoints.size() == 1) {
+			if (pointTR.first != -1) {
+				trianglePoints.push_back(std::make_pair(leftPxls[0].first, leftPxls[0].second));
+				trianglePoints.push_back(std::make_pair(bottomPxls[0].first, bottomPxls[0].second));
+			}
+			else if (pointTL.first != -1) {
+				trianglePoints.push_back(std::make_pair(rightPxls[0].first, rightPxls[0].second));
+				trianglePoints.push_back(std::make_pair(bottomPxls[0].first, bottomPxls[0].second));
+			}
+			else if (pointBR.first != -1) {
+				trianglePoints.push_back(std::make_pair(leftPxls[0].first, leftPxls[0].second));
+				trianglePoints.push_back(std::make_pair(topPxls[0].first, topPxls[0].second));
+			}
+			else if (pointBL.first != -1) {
+				trianglePoints.push_back(std::make_pair(rightPxls[0].first, rightPxls[0].second));
+				trianglePoints.push_back(std::make_pair(topPxls[0].first, topPxls[0].second));
+			}
+		}
 	}
 
 	bool addToY(std::vector<std::pair<int, int>> &allXY, int y, const cv::Mat &image)
@@ -382,18 +405,17 @@ namespace shapedetector {
 		auto rightPxls = getPixelsRight(edges, rightEdge);
 
 		if (!topPxls.empty() && !bottomPxls.empty() && !leftPxls.empty() && !rightPxls.empty()) {
-			std::vector<std::pair<int, int>> twoTrianglePoints = findTwoPoints(topPxls, bottomPxls, leftPxls, rightPxls);
-			if (twoTrianglePoints.size() < 2)
-				return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
-
-		/*	if (!confirmTwoPointValidity(twoTrianglePoints, edges))
-				return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
-				*/
-			std::pair<int, int> thirdPoint = findThirdPoint(twoTrianglePoints, edges);
-			if (thirdPoint.first == -1)
-				return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
-			else
-				return detectTriangleWith3Point(edgePoint, twoTrianglePoints[0], twoTrianglePoints[1], thirdPoint);
+			std::vector<std::pair<int, int>> trianglePoints;
+	
+			findThreePoints(trianglePoints, topPxls, bottomPxls, leftPxls, rightPxls);
+			if (trianglePoints.size() != 3) {
+				if (trianglePoints.size() != 2)
+					return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
+				trianglePoints.push_back(findThirdPoint(trianglePoints, edges));
+				if (trianglePoints.rbegin()->first == -1)
+					return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
+			}
+			return detectTriangleWith3Point(edgePoint, trianglePoints[0], trianglePoints[1], trianglePoints[2]);
 		}
 		else
 			return std::make_tuple(std::make_pair(-1, -1), std::make_pair(-1, -1), std::make_pair(-1, -1));
